@@ -26,7 +26,7 @@ export class User {
   password: string;
 
   // boolean, true/false for day/night mode
-  @Column()
+  @Column({ default: false })
   frontTheme: boolean;
 
   @OneToMany(() => Wallet, (wallet) => wallet.user)
