@@ -21,6 +21,12 @@ export class Reward {
   @Column({ default: 0 })
   rewardReceived: number;
 
+  @Column()
+  tribeReactionId: string;
+
+  @Column()
+  transactionId: string;
+
   @CreateDateColumn()
   createdAt: string;
 

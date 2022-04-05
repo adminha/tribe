@@ -5,7 +5,7 @@
     "username": "root",
     "password": "",
     "database": "tribe_ms_test",
-    "entities": ["dist/**/entities/*.entity{.ts,.js}"],
+    "entities": ["dist/entities/*.entity{.ts,.js}"],
     "migrations": ["dist/migrations/*{.ts,.js}"],
     "seeds": ["src/database/seeds/**/*{.ts,.js}"],
     "factories": ["src/database/factories/**/*{.ts,.js}"],

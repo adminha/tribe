@@ -4,6 +4,7 @@ import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { TribeClient } from '@tribeplatform/gql-client';
+import { JwtStrategy } from './auth/jwt.strategy';
 
 @Controller()
 export class AppController {
@@ -21,6 +22,17 @@ export class AppController {
   @Post('auth/login')
   async login(@Request() req) {
     return this.authService.login(req.body.username, req.body.password);
+  }
+
+  @Post('auth/validate')
+  async validate(@Request() req) {
+    return this.authService.validate(req.body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('rewards/send')
+  async sendRewards(@Request() req) {
+    return req.body;
   }
 
   @UseGuards(JwtAuthGuard)
