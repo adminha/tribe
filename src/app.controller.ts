@@ -30,12 +30,6 @@ export class AppController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('rewards/send')
-  async sendRewards(@Request() req) {
-    return req.body;
-  }
-
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;

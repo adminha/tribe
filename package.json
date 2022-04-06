@@ -33,6 +33,7 @@
     "@tribeplatform/gql-client": "^1.2.0",
     "bcrypt": "^5.0.1",
     "mysql2": "^2.3.3",
+    "nestjs-ethers": "^1.0.1",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
