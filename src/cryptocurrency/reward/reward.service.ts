@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ethers } from 'ethers';
 import {
   BaseProvider,
   InjectEthersProvider,
@@ -8,10 +7,10 @@ import {
   InjectSignerProvider,
   InjectContractProvider,
   EthersContract,
+  InfuraProvider,
 } from 'nestjs-ethers';
 import { Reward } from 'src/entities/reward.entity';
 import { User } from 'src/entities/user.entity';
-import { Wallet } from 'src/entities/wallet.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -21,11 +20,11 @@ export class RewardService {
     private rewardRepository: Repository<Reward>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectEthersProvider('TRT')
+    @InjectEthersProvider()
     private readonly ethersProvider: BaseProvider,
-    @InjectSignerProvider('TRT')
+    @InjectSignerProvider()
     private readonly signerProvider: EthersSigner,
-    @InjectContractProvider('TRT')
+    @InjectContractProvider()
     private readonly contractProvider: EthersContract,
   ) {}
 
@@ -36,12 +35,12 @@ export class RewardService {
         type: 'function',
         inputs: [
           {
-            name: '_to',
+            name: 'receiver',
             type: 'address',
           },
           {
             type: 'uint256',
-            name: '_tokens',
+            name: 'numTokens',
           },
         ],
         constant: false,
@@ -57,24 +56,10 @@ export class RewardService {
       contractAbiFragment,
       wallet,
     );
-    contract.connect(this.ethersProvider);
-    contract.signer
-      .sendTransaction({
-        from: process.env.ETHEREUM_WALLET_ADDRESS,
-        to: data.address,
-        value: ethers.utils.parseUnits('1000.0', 18),
-        nonce: this.ethersProvider.getBlockNumber(),
-        gasLimit: 1000000,
-        gasPrice: ethers.utils.hexlify(await this.ethersProvider.getGasPrice()),
-      })
-      .then(
-        (s) => {
-          console.log(s);
-        },
-        (f) => {
-          console.log(f);
-        },
-      );
+    return await contract.functions.transfer(
+      '0xa9c38c5b0B5baf8993724E34D1F5242bc460E034',
+      1000,
+    );
   }
   async getUserWalletAddress(data) {
     const userObject = await this.userRepository.findOne(
@@ -83,6 +68,6 @@ export class RewardService {
         relations: ['wallets'],
       },
     );
-    return userObject.wallets[0].address;
+    return userObject.wallets;
   }
 }

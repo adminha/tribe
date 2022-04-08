@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ethers } from 'ethers';
 import {
   InjectSignerProvider,
   EthersSigner,
@@ -7,6 +8,7 @@ import {
   EthersContract,
   InjectContractProvider,
   InjectEthersProvider,
+  InfuraProvider,
 } from 'nestjs-ethers';
 import { User } from 'src/entities/user.entity';
 import { Wallet } from 'src/entities/wallet.entity';
@@ -19,10 +21,12 @@ export class WalletService {
     private userRepository: Repository<User>,
     @InjectRepository(Wallet)
     private walletRepository: Repository<Wallet>,
-    @InjectSignerProvider('TRT')
+    @InjectSignerProvider()
     private readonly signerProvider: EthersSigner,
-    @InjectEthersProvider('TRT')
-    private readonly ethersProvider: BaseProvider,
+    @InjectEthersProvider()
+    private readonly ethersProvider: InfuraProvider,
+    @InjectContractProvider()
+    private readonly contractProvider: EthersContract,
   ) {}
 
   async generateUserWallet(data) {
@@ -52,8 +56,20 @@ export class WalletService {
   }
 
   async getWalletBalance() {
-    return this.signerProvider.createWalletfromMnemonic(
-      'vast decade describe tail sketch manage bottom cattle help wrong thunder burger',
-    ).privateKey;
+    const contractAbiFragment = [
+      'function balanceOf(address tokenOwner) view returns (uint256)',
+    ];
+    const wallet = this.signerProvider.createWallet(
+      process.env.ETHEREUM_WALLET_PRIVATE_KEY,
+    );
+    const contract = this.contractProvider.create(
+      process.env.ETHEREUM_CONTRACT_ADDRESS,
+      contractAbiFragment,
+      wallet,
+    );
+    const balance = await contract.balanceOf(
+      '0xa9c38c5b0b5baf8993724e34d1f5242bc460e034',
+    );
+    return balance;
   }
 }

@@ -12,7 +12,6 @@ import { EthersModule, ROPSTEN_NETWORK } from 'nestjs-ethers';
 @Module({
   imports: [
     EthersModule.forRoot({
-      token: 'TRT',
       network: ROPSTEN_NETWORK,
     }),
     AuthModule,
