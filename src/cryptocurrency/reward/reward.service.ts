@@ -12,6 +12,7 @@ import {
 import { Reward } from 'src/entities/reward.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
+import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class RewardService {
@@ -26,6 +27,7 @@ export class RewardService {
     private readonly signerProvider: EthersSigner,
     @InjectContractProvider()
     private readonly contractProvider: EthersContract,
+    private readonly walletService: WalletService,
   ) {}
 
   async sendRewards(data) {
@@ -56,18 +58,33 @@ export class RewardService {
       contractAbiFragment,
       wallet,
     );
-    return await contract.functions.transfer(
-      '0xa9c38c5b0B5baf8993724E34D1F5242bc460E034',
-      1000,
-    );
+    const userWallet = await this.walletService.getUserWallet(data.username);
+    await contract.functions
+      .transfer(userWallet.address, 1000)
+      .then((success) => {
+        const tx = this.rewardRepository.create({
+          rewardReceived: 100,
+          walletAddress: userWallet,
+          tribeReactionId: data.tribeReactionId,
+          transactionId: success.hash,
+        });
+        this.rewardRepository.save(tx);
+        return success;
+      });
   }
-  async getUserWalletAddress(data) {
-    const userObject = await this.userRepository.findOne(
+
+  async getUserRewards(data) {
+    const user = await this.userRepository.findOne(
       { username: data.username },
-      {
-        relations: ['wallets'],
-      },
+      { relations: ['wallets'] },
     );
-    return userObject.wallets;
+    const rewards = [];
+    user.wallets.forEach(async (item) => {
+      const rewardItems = this.rewardRepository.find({
+        walletAddress: item,
+      });
+      rewards.push(rewardItems);
+    });
+    return rewards;
   }
 }

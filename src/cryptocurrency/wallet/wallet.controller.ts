@@ -18,4 +18,14 @@ export class WalletController {
   async getWalletBalance() {
     return this.walletService.getWalletBalance();
   }
+
+  @Post('generate')
+  async generateWallet(@Request() req) {
+    return this.walletService.generateUserWallet(req.body.username);
+  }
+
+  @Post('setdefault')
+  async setDefaultWallet(@Request() req) {
+    return this.walletService.setDefaultWallet(req.body);
+  }
 }

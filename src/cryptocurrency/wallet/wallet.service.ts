@@ -29,30 +29,35 @@ export class WalletService {
     private readonly contractProvider: EthersContract,
   ) {}
 
-  async generateUserWallet(data) {
+  async generateUserWallet(username) {
     const randomWallet = this.signerProvider.createRandomWallet();
     const user = await this.userRepository.findOne(
-      { username: data.username },
+      { username: username },
       { relations: ['wallets'] },
     );
     const wallet = this.walletRepository.create({
       address: randomWallet.address,
     });
     user.wallets.push(wallet);
+    await this.walletRepository.save(wallet);
     await this.userRepository.save(user);
-    return [randomWallet.privateKey, randomWallet.address];
+    return {
+      privatekey: randomWallet.privateKey,
+      address: randomWallet.address,
+    };
   }
 
   async updateUserWallet(username, address) {
-    try {
-      const user = await this.userRepository.findOne({ username: username });
-      const wallet = this.walletRepository.create({ address: address });
-      user.wallets = [await this.walletRepository.save(wallet)];
-      this.userRepository.save(user);
-      return wallet;
-    } catch (error) {
-      throw error;
-    }
+    const user = await this.userRepository.findOne(
+      { username: username },
+      { relations: ['wallets'] },
+    );
+    const wallet = this.walletRepository.create({ address: address });
+    user.wallets.push(wallet);
+    await this.walletRepository.save(wallet);
+    await this.userRepository.save(user);
+    const { id, password, ...userObject } = user;
+    return user;
   }
 
   async getWalletBalance() {
@@ -71,5 +76,25 @@ export class WalletService {
       '0xa9c38c5b0b5baf8993724e34d1f5242bc460e034',
     );
     return balance;
+  }
+
+  async setDefaultWallet(data) {
+    const user = await this.userRepository.findOne({ username: data.username });
+    user.defaultWalletId = data.walletId;
+    this.userRepository.save(user);
+    const { id, password, ...userObject } = user;
+    return user;
+  }
+
+  async getUserWallet(username) {
+    const user = await this.userRepository.findOne(
+      { username: username },
+      { relations: ['wallets'] },
+    );
+    if (user.defaultWalletId) {
+      return user.wallets.find((item) => item.id === user.defaultWalletId);
+    } else {
+      return user.wallets[0];
+    }
   }
 }
