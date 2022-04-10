@@ -6,85 +6,76 @@
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
 
 # NestJS Backend for Tribe
 
 A simple api service which will serve the [frontend built with react](https://github.com/adminha/tribe-frontend)
 
-# Usage
+Here we have 6 main logics and services:
 
-In order to use this backend service, first of all you should create a test database & define the connection parameters & credentials in `ormconfig.json` file.
+- Authentication & Authorization (using Jwt)
+- Generating ethereum wallets
+- Self-adding ethereum wallets
+- Guest & member access token (tribe) generating
+- User registration (both in here at NestJS backend & tribe platform) & login
+- Sending rewards (Tribe Token Reward) to user's wallet on Like & comment reaction
+
+
+
+# 1. Usage
+## 1.1. Default config (Recommended)
+
+If you don't want to change anything, you can just create a database & provide the credentials in `ormconfig.json` file, you don't need to change anything else & you can use the default values provided in `.env` file here in this repository.
+
+## 1.2. Configuring with your own credentials
+
+First of all you should create a test database & define the connection parameters & credentials in `ormconfig.json` file.
 
 After that, please go to `.env` file and change the variable values as well.
 
-In the `.env` file there are three variables beginning with `ETHEREUM_`, 
+In the `.env` file there are three variables beginning with `ETHEREUM_`, please refer to section `1.2.1` for more details.
 
-## 
+### 1.2.1. Ethereum smart contract & wallet credentials
 
+Again, I highly recommend to use the default config as mentioned in section `1.1`, But if you prefer to use your own smart contract or generate a new token, you can use the `tribetoken.sol` file provided here in this repository.
 
+It contains a simple smart contract written in `Solidity` language for generating a token named `Tribe Reward Token` with `TRT` as the symbol.
 
-## Description
+In order to use it, you should first install `MetaMask` extension, then after executing the contract & approving the transaction in metamask, a new contract with the new token you configured will be generated. Then, you should provide the smart contract address & your wallet public/private keys in the `.env` file.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+*You can use Ethereum's Ropsten test network and get some test ETH tokens from free faucets*
 
-## Installation
+# 2. Installation & Running
 
-```bash
-$ npm install
+There are two main steps here.
+
+### 2.1.1. Installation
+
+```bash 
+npm install
 ```
 
-## Running the app
+### 2.1.2. Seeding the database
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```bash 
+npm run seed:run
 ```
 
-## Test
+This command will seed the database with two base users:
+
+- Username: mostafa, password: 123
+- Username: siavash, password: 123
+
+You can use these users in order to login in the frontend built with react.
+
+Btw, if you want, you can also register as a new user in the frontend, which will generate two users:
+
+1. A user will be created in Tribe Community
+2. Same user will be created in the database you provided here for NestJS
+
+## 2.2. Running the project
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+nest start --watch
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+If you don't want to change anything and see the results in realtime, you can ignore `--watch` part.

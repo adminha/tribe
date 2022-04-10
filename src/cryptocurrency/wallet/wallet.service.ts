@@ -58,7 +58,7 @@ export class WalletService {
     return user;
   }
 
-  async getWalletBalance() {
+  async getWalletBalance(address) {
     const contractAbiFragment = [
       'function balanceOf(address tokenOwner) view returns (uint256)',
     ];
@@ -70,9 +70,7 @@ export class WalletService {
       contractAbiFragment,
       wallet,
     );
-    const balance = await contract.balanceOf(
-      '0xa9c38c5b0b5baf8993724e34d1f5242bc460e034',
-    );
+    const balance = await contract.balanceOf(address);
     return balance;
   }
 
