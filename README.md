@@ -22,6 +22,23 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+
+# NestJS Backend for Tribe
+
+A simple api service which will serve the [frontend built with react](https://github.com/adminha/tribe-frontend)
+
+# Usage
+
+In order to use this backend service, first of all you should create a test database & define the connection parameters & credentials in `ormconfig.json` file.
+
+After that, please go to `.env` file and change the variable values as well.
+
+In the `.env` file there are three variables beginning with `ETHEREUM_`, 
+
+## 
+
+
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
