@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Request,
-  BadRequestException,
-  NotAcceptableException,
-} from '@nestjs/common';
+import { Controller, Post, Body, NotAcceptableException } from '@nestjs/common';
 import { TribeService } from 'src/tribe/tribe.service';
 import { CreateUserDTO } from './dto/CreateUserDTO';
 import { UsersService } from './users.service';
@@ -40,25 +29,5 @@ export class UsersController {
   @Post('update')
   updateUser(@Body() data: CreateUserDTO) {
     return this.usersService.update(data);
-  }
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
-
-  @Patch(':id')
-  update(@Param('id') id: string) {
-    return this.usersService.update(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
   }
 }

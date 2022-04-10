@@ -6,7 +6,7 @@ import { WalletService } from './wallet.service';
 export class WalletController {
   constructor(private walletService: WalletService) {}
   @Post('update')
-  //   @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async updateWallet(@Request() req) {
     return this.walletService.updateUserWallet(
       req.body.username,
@@ -15,16 +15,19 @@ export class WalletController {
   }
 
   @Get('balance')
+  @UseGuards(JwtAuthGuard)
   async getWalletBalance() {
     return this.walletService.getWalletBalance();
   }
 
   @Post('generate')
+  @UseGuards(JwtAuthGuard)
   async generateWallet(@Request() req) {
     return this.walletService.generateUserWallet(req.body.username);
   }
 
   @Post('setdefault')
+  @UseGuards(JwtAuthGuard)
   async setDefaultWallet(@Request() req) {
     return this.walletService.setDefaultWallet(req.body);
   }

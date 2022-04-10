@@ -7,7 +7,6 @@ import {
   InjectSignerProvider,
   InjectContractProvider,
   EthersContract,
-  InfuraProvider,
 } from 'nestjs-ethers';
 import { Reward } from 'src/entities/reward.entity';
 import { User } from 'src/entities/user.entity';
@@ -76,15 +75,8 @@ export class RewardService {
   async getUserRewards(data) {
     const user = await this.userRepository.findOne(
       { username: data.username },
-      { relations: ['wallets'] },
+      { relations: ['wallets', 'wallets.rewards'] },
     );
-    const rewards = [];
-    user.wallets.forEach(async (item) => {
-      const rewardItems = this.rewardRepository.find({
-        walletAddress: item,
-      });
-      rewards.push(rewardItems);
-    });
-    return rewards;
+    return user.wallets;
   }
 }

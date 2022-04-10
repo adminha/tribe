@@ -20,10 +20,6 @@ export class UsersService {
     await this.userRepository.save(newUser);
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
   async findOne(username: string): Promise<User | undefined> {
     return this.userRepository.findOne(
       { username: username },
@@ -39,9 +35,5 @@ export class UsersService {
     await this.userRepository.save(user);
     const { id, password, ...userObject } = user;
     return userObject;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

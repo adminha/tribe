@@ -24,13 +24,10 @@ export class AuthService {
   }
 
   async validate(payload: any) {
-    console.log(payload);
     const user: User = await this.usersService.findOne(payload.username);
-
     if (!user) {
       throw new UnauthorizedException();
     }
-
     return user;
   }
 }

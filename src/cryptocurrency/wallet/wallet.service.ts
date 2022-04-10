@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ethers } from 'ethers';
 import {
   InjectSignerProvider,
   EthersSigner,
-  BaseProvider,
   EthersContract,
   InjectContractProvider,
   InjectEthersProvider,
@@ -12,7 +10,7 @@ import {
 } from 'nestjs-ethers';
 import { User } from 'src/entities/user.entity';
 import { Wallet } from 'src/entities/wallet.entity';
-import { getConnection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class WalletService {
